@@ -71,7 +71,7 @@ def main():
 
     # Points at whose the derivative is computed
     cdf = 5000 # Resolution of the computation
-    cdf = 1000
+    #cdf = 1000
     
     xi_points = xi_max*cdf
 
@@ -86,6 +86,7 @@ def main():
 
     # Defining with n values we want to compute
     nn_list = [i for i in np.arange(0,5.001,0.001)]
+    #nn_list = [i for i in np.arange(0,5.5,0.5)]
 
     # Dataframe to store the polytropic constants
     df_cons = pd.DataFrame(columns = ['n','Dn','Mn','Rn','Bn'])
@@ -204,47 +205,109 @@ def main():
                 \DeclareSIUnit{\cts}{cts}
                 '''
 
+
     # Plotting theta values for each n
     f1 = plt.figure(1)
-    plt.xlim(xi_0,xi_max)
+    ax = plt.subplot(111)
+    plt.xlim(-0.1,15.1)
     plt.ylim(-0.1,1.1)
     
     for nn in nnn_list:    
-        plt.plot(xi_dict[nn],theta_dict[nn],label=f'n={nn}')
-    plt.xlabel(r'$\xi$')
-    plt.ylabel(r'$\theta$')
-    plt.legend()
+        ax.plot(xi_dict[nn],theta_dict[nn],label=f'n={nn}')
     
-    f2 = plt.figure(5)
-    plt.plot(xi_dict[0],theta_dict[0],label=f'n=0')
-    plt.plot(xi_dict[0],theta_values_n0,label=f'n=0 An')
-    plt.plot(xi_dict[1],theta_dict[1],label=f'n=1')
-    plt.plot(xi_dict[1],theta_values_n1,label=f'n=1 An')
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        
     plt.xlabel(r'$\xi$')
     plt.ylabel(r'$\theta$')
-    plt.legend()
+
+    plt.savefig(f'f1_theta.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f1)
+    
+    # Plotting tau values for each n
+    f1 = plt.figure(1)
+    ax = plt.subplot(111)
+    plt.xlim(-0.1,15.1)
+    plt.ylim(-0.9,0.1)
+    
+    for nn in nnn_list:    
+        ax.plot(xi_dict[nn],tau_dict[nn],label=f'n={nn}')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        
+    plt.xlabel(r'$\xi$')
+    plt.ylabel(r'$\tau$')
+    
+    plt.savefig(f'f1_tau.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f1)
+    
+    # Comparisson between numerical an analytical solution
+    f2 = plt.figure(5)
+    ax = plt.subplot(111)
+    
+    ax.plot(xi_dict[0],theta_dict[0],label=f'n=0 Numerical')
+    ax.plot(xi_dict[0],theta_values_n0,label=f'n=0 Analitycal')
+    ax.plot(xi_dict[1],theta_dict[1],label=f'n=1 Numerical')
+    ax.plot(xi_dict[1],theta_values_n1,label=f'n=1 Analitycal')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    
+    plt.xlabel(r'$\xi$')
+    plt.ylabel(r'$\theta$')
+    plt.savefig(f'f2_comp_an.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f2)
 
     # Ploting Dn values 
     f3 = plt.figure(2)
-    plt.plot(df_cons['n'],df_cons['Dn'],label='Dn')
+    ax = plt.subplot(111)
+    
+    ax.plot(df_cons['n'],df_cons['Dn'],label='Dn')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    #ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    
     plt.xlabel(r'$n$')
     plt.ylabel(r'$D_n$')
-    plt.legend()
+    
+    plt.savefig(f'f3_Dn.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f3)
 
     # Plotting Mn and Bn values
     f4 = plt.figure(3)
-    plt.plot(df_cons['n'],df_cons['Mn'],label='Mn')
-    plt.plot(df_cons['n'],df_cons['Bn'],label='Bn')
+    ax = plt.subplot(111)
+    
+    ax.plot(df_cons['n'],df_cons['Mn'],label='Mn')
+    ax.plot(df_cons['n'],df_cons['Bn'],label='Bn')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='upper right')
+    
     plt.xlabel(r'$n$')
-    plt.legend()
+    plt.savefig(f'f4_Mn_Bn.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f4)
 
     # Ploting the rate rho/rho_c
     f5 = plt.figure(4)
+    ax = plt.subplot(111)
+        
     for nn in nnn_list:
-        plt.plot(xi_dict[nn]/xi_1_dict[nn],rho_rat_dict[nn],label=f'{nn}')
-    plt.xlabel(r'$R/R_{\odot}$')
+        plt.plot(xi_dict[nn]/xi_1_dict[nn],rho_rat_dict[nn],label=f'n={nn}')
+    
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
     plt.ylabel(r'$\rho/\rho_c$')
-    plt.legend()
+  
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))  
+    plt.savefig(f'f5_rho_rat.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    plt.close(f5)
 
 
     '#----------COMPARISSON OF THE MODEL----------#'
@@ -365,63 +428,90 @@ def main():
 
     # Mass as function of radius
     f6 = plt.figure(6)
+    ax = plt.subplot(111)
+        
     for n in n_model_list:
-        plt.plot(rad_dict[n],mass_dict[n],label=f'{n}')
-    plt.plot(df_model_compl['R/Rsun'],df_model_compl['M/Msun'],label=f'Model')
-    plt.xlabel(r'$R/R_{\odot}$')
-    plt.ylabel(r'$M/M_{\odot}$')
-    plt.legend()
+        ax.plot(rad_dict[n],mass_dict[n],label=f'n={n}')
+    ax.plot(df_model_compl['R/Rsun'],df_model_compl['M/Msun'],label=f'Modelo complejo')
     
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
+    plt.ylabel(r'$M/\mathrm{M_{\odot}}$')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))  
+    plt.savefig(f'f6_mass.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+
     # Mass as function of radius
     f7 = plt.figure(7)
+    ax = plt.subplot(111)
+    
     for n in n_model_list:
-        plt.plot(rad_dict[n],np.log10(rho_dict[n]),label=f'{n}')
-    plt.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['Rho']),label=f'Model')
-    plt.xlabel(r'$R/R_{\odot}$')
-    plt.ylabel(r'$log(\rho)$')
-    plt.legend()
+        ax.plot(rad_dict[n],np.log10(rho_dict[n]),label=f'n={n}')
+    ax.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['Rho']),label=f'Modelo complejo')
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
+    plt.ylabel(r'$log(\rho/\mathrm{g\ cm^-3})$')
+
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))  
+    plt.savefig(f'f7_rho.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    
     
     # Temperature as function of radius
     f8 = plt.figure(8)
+    ax = plt.subplot(111)
+    
     for n in n_model_list:
-        plt.plot(rad_dict[n],np.log10(temp_dict[n]),label=f'{n}')
-    plt.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['T']),label=f'Model')
-    plt.xlabel(r'$R/R_{\odot}$')
-    plt.ylabel(r'$log(T)$')
-    plt.legend()
+        ax.plot(rad_dict[n],np.log10(temp_dict[n]),label=f'n={n}')
+    ax.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['T']),label=f'Modelo complejo')
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
+    plt.ylabel(r'$log(T/\mathrm{K})$')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))  
+    plt.savefig(f'f8_T.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+    
     
     # Pressure as function of radius
     f9 = plt.figure(9)
-    for n in n_model_list:
-        plt.plot(rad_dict[n],np.log10(pre_dict[n]),label=f'{n}')
-        #print(f'\n{n}')
-        #print(rad_dict[n])
-    plt.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['P']),label=f'Model')
-    plt.xlabel(r'$R/R_{\odot}$')
-    plt.ylabel(r'$log(P)$')
-    plt.legend()
+    ax = plt.subplot(111)
     
-    # Pressure as function of radius
+    for n in n_model_list:
+        ax.plot(rad_dict[n],np.log10(pre_dict[n]),label=f'n={n}')
+    ax.plot(df_model_compl['R/Rsun'],np.log10(df_model_compl['P']),label=f'Modelo complejo')
+    
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
+    plt.ylabel(r'$log(P/\mathrm{dyn\ cm^-2})$')
+    
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width, box.height])
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))  
+    plt.savefig(f'f9_P.pdf', format='pdf', dpi=1000, bbox_inches='tight')
+
+    
+    # Derivative
     f10 = plt.figure(10)
     for n in n_model_list:
         plt.plot(rad_dict[n][:-1],par_dict[n],label=f'{n}')
         plt.plot(rad_dict[n][:-1],der_dict[n],label=f'{n}')
-    plt.xlabel(r'$R/R_{\odot}$')
+    plt.xlabel(r'$R/\mathrm{R_{\odot}}$')
     plt.ylabel(r'$Function and its derivative$')
     plt.legend()
     
     # Showing the plots
     if '-pl' in sys.argv:
         
-        #plt.close(f1) # Theta values for each n
-        #plt.close(f2) # Analitycal oomparisson
-        #plt.close(f3) # Dn evolution with xi
-        #plt.close(f4) # Mn and Bn evolution with xi
-        #plt.close(f5) # Rho ratio
-        #plt.close(f6) # Mass
-        #plt.close(f7) # Density
-        #plt.close(f8) # Temperature
-        #plt.close(f9) # Pressure
+        plt.close(f1) # Theta values for each n
+        plt.close(f2) # Analitycal oomparisson
+        plt.close(f3) # Dn evolution with xi
+        plt.close(f4) # Mn and Bn evolution with xi
+        plt.close(f5) # Rho ratio
+        plt.close(f6) # Mass
+        plt.close(f7) # Density
+        plt.close(f8) # Temperature
+        plt.close(f9) # Pressure
         plt.close(f10) # Derivative     
         
         plt.show()
